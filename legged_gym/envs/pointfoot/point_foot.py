@@ -1092,6 +1092,10 @@ class PointFoot:
         self.feet_air_time += self.dt
 
     # ------------ reward functions----------------
+    def _reward_lin_vel_z(self):
+        # Penalize z axis base linear velocity
+        return torch.square(self.base_lin_vel[:, 2])
+    
     def _reward_ang_vel_xy(self):
         # Penalize xy axes base angular velocity
         return torch.sum(torch.square(self.base_ang_vel[:, :2]), dim=1)
