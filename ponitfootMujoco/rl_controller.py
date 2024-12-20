@@ -24,7 +24,7 @@ class PointfootController:
 
         # Load configuration and model file paths based on robot type
         self.config_file = f'{model_dir}/{self.robot_type}/params.yaml'
-        self.model_file = f'{model_dir}/{self.robot_type}/policy/policy/policy02.onnx'
+        self.model_file = f'{model_dir}/{self.robot_type}/policy/policy1218.onnx'
 
         # Load configuration settings from the YAML file
         self.load_config(self.config_file)

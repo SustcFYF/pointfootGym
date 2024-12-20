@@ -128,7 +128,7 @@ if __name__ == '__main__':
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Define the path to the robot model XML file based on the robot type
-    model_path = f'{script_dir}/robot_description/{robot_type}/xml/robot.xml'
+    model_path = f'{script_dir}/robot_description/{robot_type}/xml/robot_bak.xml'
 
     # Check if the model file exists, otherwise exit with an error
     if not os.path.exists(model_path):
