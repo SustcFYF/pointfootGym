@@ -42,7 +42,9 @@ if not robot_type:
 if robot_type.startswith("PF"):
     from legged_gym.envs.pointfoot.point_foot import PointFoot
     from legged_gym.envs.pointfoot.pointfoot_rough_config import PointFootRoughCfg, PointFootRoughCfgPPO
+    from legged_gym.envs.pointfoot.pointfoot_flat_config import PointFootFlatCfg, PointFootFlatCfgPPO
     task_registry.register("pointfoot_rough", PointFoot, PointFootRoughCfg(), PointFootRoughCfgPPO())
+    task_registry.register("pointfoot_flat", PointFoot, PointFootFlatCfg(), PointFootFlatCfgPPO())
 else:
     print("Error: Unknown robot type", robot_type)
     sys.exit(1)
