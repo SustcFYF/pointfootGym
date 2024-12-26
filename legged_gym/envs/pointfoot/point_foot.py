@@ -1153,32 +1153,30 @@ class PointFoot:
         return torch.sum(
             (torch.abs(self.torques) - self.torque_limits * self.cfg.rewards.soft_torque_limit).clip(min=0.), dim=1)
 
-    # def _reward_tracking_lin_vel(self):
-    #     # Tracking of linear velocity commands (xy axes)
-    #     # print("linear velocity command:", self.commands[:, :2])
-    #     # print("linear velocity real:", self.base_lin_vel[:, :2])
-    #     lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
-    #     return torch.exp(-lin_vel_error / self.cfg.rewards.tracking_sigma)
+    def _reward_tracking_lin_vel(self):
+        # Tracking of linear velocity commands (xy axes)
+        # lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
+        lin_vel_error = torch.sum(torch.square(- self.base_lin_vel[:, :2]), dim=1)
+        return torch.exp(-lin_vel_error / self.cfg.rewards.tracking_sigma)
 
-    # def _reward_tracking_ang_vel(self):
-    #     # Tracking of angular velocity commands (yaw)
-    #     # print("angular velocity command:", self.commands[:, 2])
-    #     # print("angular velocity real:", self.base_ang_vel[:, 2])
-    #     ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
-    #     return torch.exp(-ang_vel_error / self.cfg.rewards.tracking_sigma)
+    def _reward_tracking_ang_vel(self):
+        # Tracking of angular velocity commands (yaw)
+        # ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
+        ang_vel_error = torch.square(- self.base_ang_vel[:, 2])
+        return torch.exp(-ang_vel_error / self.cfg.rewards.tracking_sigma)
 
-    def _reward_feet_air_time(self):
-        # Reward steps between proper duration
-        rew_airTime_below_min = torch.sum(
-            torch.min(self.feet_air_time - self.cfg.rewards.min_feet_air_time,
-                      torch.zeros_like(self.feet_air_time)) * self.first_contact,
-            dim=1)
-        rew_airTime_above_max = torch.sum(
-            torch.min(self.cfg.rewards.max_feet_air_time - self.feet_air_time,
-                      torch.zeros_like(self.feet_air_time)) * self.first_contact,
-            dim=1)
-        rew_airTime = rew_airTime_below_min + rew_airTime_above_max
-        return rew_airTime
+    # def _reward_feet_air_time(self):
+    #     # Reward steps between proper duration
+    #     rew_airTime_below_min = torch.sum(
+    #         torch.min(self.feet_air_time - self.cfg.rewards.min_feet_air_time,
+    #                   torch.zeros_like(self.feet_air_time)) * self.first_contact,
+    #         dim=1)
+    #     rew_airTime_above_max = torch.sum(
+    #         torch.min(self.cfg.rewards.max_feet_air_time - self.feet_air_time,
+    #                   torch.zeros_like(self.feet_air_time)) * self.first_contact,
+    #         dim=1)
+    #     rew_airTime = rew_airTime_below_min + rew_airTime_above_max
+    #     return rew_airTime
 
     def _reward_no_fly(self):
         contacts = self.contact_forces[:, self.feet_indices, 2] > 0.1

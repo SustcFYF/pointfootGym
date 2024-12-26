@@ -16,11 +16,8 @@ class PointFootFlatCfg(PointFootRoughCfg):
         max_contact_force = 350.
 
         class scales(PointFootRoughCfg.rewards.scales):
-            orientation = -5.0
-            torques = -0.000025
             feet_air_time = 5.
             unbalance_feet_air_time = 1.0
-            no_fly = 1.
             # feet_contact_forces = -0.01
 
     class commands(PointFootRoughCfg.commands):
@@ -38,9 +35,9 @@ class PointFootFlatCfg(PointFootRoughCfg):
 
 class PointFootFlatCfgPPO(PointFootRoughCfgPPO):
     class policy(PointFootRoughCfgPPO.policy):
-        actor_hidden_dims = [128, 64, 32]
-        critic_hidden_dims = [128, 64, 32]
+        actor_hidden_dims = [256, 128, 64]   # [128, 64, 32]
+        critic_hidden_dims = [256, 128, 64]   # [128, 64, 32]
 
     class runner(PointFootRoughCfgPPO.runner):
         experiment_name = 'pointfoot_flat'
-        max_iterations = 30000
+        max_iterations = 20000   # 30000
