@@ -16,7 +16,7 @@ class PointFootFlatCfg(PointFootRoughCfg):
         max_contact_force = 350.
 
         class scales(PointFootRoughCfg.rewards.scales):
-            feet_air_time = 5.
+            # feet_air_time = 5.
             unbalance_feet_air_time = 1.0
             # feet_contact_forces = -0.01
 
