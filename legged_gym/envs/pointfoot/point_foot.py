@@ -1157,14 +1157,15 @@ class PointFoot:
         # Tracking of linear velocity commands (xy axes)
         # lin_vel_error = torch.sum(torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1)
         lin_vel_error = torch.sum(torch.square(- self.base_lin_vel[:, :2]), dim=1)
-        return torch.exp(-lin_vel_error / self.cfg.rewards.tracking_sigma)
+        # return torch.exp(-lin_vel_error / self.cfg.rewards.tracking_sigma)
+        return lin_vel_error
 
     def _reward_tracking_ang_vel(self):
         # Tracking of angular velocity commands (yaw)
         # ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
         ang_vel_error = torch.square(- self.base_ang_vel[:, 2])
-        return torch.exp(-ang_vel_error / self.cfg.rewards.tracking_sigma)
-
+        return ang_vel_error
+    
     # def _reward_feet_air_time(self):
     #     # Reward steps between proper duration
     #     rew_airTime_below_min = torch.sum(
@@ -1183,10 +1184,15 @@ class PointFoot:
         single_contact = torch.sum(1. * contacts, dim=1) >= 1
         return 1. * single_contact
     
+    def _reward_less_two_contact(self):
+        contacts = self.contact_forces[:, self.feet_indices, 2] > 0.1
+        single_contact = torch.sum(1. * contacts, dim=1) < 2
+        return 1. * single_contact
+    
     def _reward_two_contact(self):
         contacts = self.contact_forces[:, self.feet_indices, 2] > 0.1
-        single_contact = torch.sum(1. * contacts, dim=1) == 2
-        return 1. * single_contact
+        double_contact = torch.sum(1. * contacts, dim=1) == 2
+        return 1. * double_contact
 
     def _reward_unbalance_feet_air_time(self):
         return torch.var(self.last_feet_air_time, dim=-1)
@@ -1221,4 +1227,8 @@ class PointFoot:
         return reward
 
     def _reward_survival(self):
-        return (~self.reset_buf).float() * self.dt
+        return (~self.reset_buf).float() * self.dt   # 0.02
+    
+    def _reward_symmetry(self):
+        joint_diffs = self.dof_pos[:, :3] - self.dof_pos[:, 3:]
+        return torch.sum(torch.square(joint_diffs), dim=1)     

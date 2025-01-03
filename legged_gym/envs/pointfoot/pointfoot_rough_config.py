@@ -40,15 +40,15 @@ class PointFootRoughCfg(BaseConfig):
     class commands:
         curriculum = False
         max_curriculum = 1.
-        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 0  # 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.  # time before command are changed[s]
         heading_command = True  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-1.0, 1.0]  # min max [m/s]
-            lin_vel_y = [-0.2, 0.2]  # min max [m/s]
-            ang_vel_yaw = [-1, 1]  # min max [rad/s]
-            heading = [-3.14, 3.14]
+            lin_vel_x = [0, 0]  # [-1.0, 1.0]  # min max [m/s]
+            lin_vel_y = [0, 0]  # [-0.2, 0.2]  # min max [m/s]
+            ang_vel_yaw = [0, 0]  # [-1, 1]  # min max [rad/s]
+            heading = [0, 0]  # [-3.14, 3.14]
 
     class init_state:
         pos = [0.0, 0.0, 0.62]  # x,y,z [m]
@@ -125,13 +125,13 @@ class PointFootRoughCfg(BaseConfig):
         thickness = 0.01
 
     class domain_rand:
-        randomize_friction = True
+        randomize_friction = False   # True
         friction_range = [0.0, 1.6]
-        randomize_base_mass = True
+        randomize_base_mass = False  # True
         added_mass_range = [-1., 2.]
-        randomize_base_com = True
+        randomize_base_com = False   # True
         rand_com_vec = [0.03, 0.02, 0.03]
-        push_robots = True
+        push_robots = False   # True
         push_interval_s = 7
         max_push_vel_xy = 1.
 
@@ -139,30 +139,32 @@ class PointFootRoughCfg(BaseConfig):
         class scales:
             action_rate = -0.02   # -0.01
             ang_vel_xy = -0.1     # -0.05
-            base_height = -20.0   # -10.0
+            base_height = -50.0   # -10.0
             collision = -50.0
             dof_acc = -5e-07      # -2.5e-07
             dof_pos_limits = -0.0
-            dof_vel = -5e-05      # -0.0
+            dof_vel = -5e-04      # -0.0
             # feet_air_time = 60
-            feet_contact_forces = -0.01
+            feet_contact_forces = -0.05
             stumble = -0.1   # -0.0
             lin_vel_z = -1        # -0.5
-            no_fly = 2.0          # 1.0
-            two_contact = 10.0
+            no_fly = 0.0          # 1.0
+            less_two_contact = -2.0
+            two_contact = 5.0
             orientation = -10.0   # -5.0
             stand_still = -1.0
             termination = -0.0
             torque_limits = -0.1
             torques = -2.5e-05
-            tracking_ang_vel = 5.0   # 5
-            tracking_lin_vel = 5.0   # 10.0
+            tracking_ang_vel = -2.0   # 5
+            tracking_lin_vel = -3.0   # 10.0
             unbalance_feet_air_time = -300.0
             unbalance_feet_height = -60.0
-            feet_distance = -200  # -100
-            survival = 100
+            feet_distance = -400  # -100
+            survival = 200
+            symmetry = -1
 
-        base_height_target = 0.65   # 0.62
+        base_height_target = 0.62
         soft_dof_pos_limit = 0.95  # percentage of urdf limits, values above this limit are penalized
         soft_dof_vel_limit = 0.9
         soft_torque_limit = 0.8
@@ -185,7 +187,7 @@ class PointFootRoughCfg(BaseConfig):
         clip_actions = 100.
 
     class noise:
-        add_noise = True
+        add_noise = False  # True
         noise_level = 1.0  # scales other values
 
         class noise_scales:
